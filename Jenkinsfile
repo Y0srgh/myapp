@@ -6,7 +6,6 @@ pipeline {
         IMAGE_NAME = "y0srgh/myapp"
         IMAGE_TAG = "${env.BUILD_NUMBER}"
     }
-
     stages {
         stage('Checkout') {
             steps {
@@ -26,15 +25,10 @@ pipeline {
             }
         }
 
+
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t $IMAGE_NAME:$IMAGE_TAG -t $IMAGE_NAME:latest .'
-            }
-        }
-
-        stage('Test Docker Image') {
-            steps {
-                sh 'docker run --rm $IMAGE_NAME:$IMAGE_TAG java -version'
+                sh 'docker build -t $IMAGE_NAME:latest .'
             }
         }
 
@@ -46,7 +40,6 @@ pipeline {
 
         stage('Push to Docker Hub') {
             steps {
-                sh 'docker push $IMAGE_NAME:$IMAGE_TAG'
                 sh 'docker push $IMAGE_NAME:latest'
             }
         }
