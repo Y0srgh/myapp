@@ -2,7 +2,7 @@ pipeline {
     agent any
     environment {
         DOCKER_HUB_CREDENTIALS = credentials('docker-hub-id')
-        IMAGE_NAME = "YOUR_DOCKERHUB_USERNAME/myapp"
+        IMAGE_NAME = "y0srgh/myapp"
     }
     stages {
         stage('Cloner le dépôt') {
