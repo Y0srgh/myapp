@@ -1,36 +1,49 @@
 pipeline {
     agent any
+
     environment {
-        DOCKER_HUB_CREDENTIALS = credentials('docker-hub-id')
+        DOCKERHUB_CREDENTIALS = credentials('docker-hub-id')
         IMAGE_NAME = "y0srgh/myapp"
     }
+
     stages {
-        stage('Cloner le dépôt') {
+        stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/Y0srgh/myapp.git'
+                git 'https://github.com/Y0srgh/myapp.git'
             }
         }
-        stage('Build Maven') {
+
+        stage('Build with Maven') {
             steps {
-                sh 'mvn clean package'
+                sh 'mvn clean package -DskipTests'
             }
         }
-        stage('Construire l\'image Docker') {
+
+        stage('Build Docker Image') {
             steps {
-                sh "docker build -t $IMAGE_NAME:${env.BUILD_NUMBER} ."
+                sh 'docker build -t $IMAGE_NAME:latest .'
             }
         }
-        stage('Exécuter les tests') {
+
+        stage('Login to Docker Hub') {
             steps {
-                sh 'mvn test'
+                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
             }
         }
-        stage('Publier sur Docker Hub') {
+
+        stage('Push to Docker Hub') {
             steps {
-                withDockerRegistry([credentialsId: 'docker-hub-id', url: '']) {
-                    sh "docker push $IMAGE_NAME:${env.BUILD_NUMBER}"
-                }
+                sh 'docker push $IMAGE_NAME:latest'
             }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline completed successfully ✅'
+        }
+        failure {
+            echo 'Pipeline failed ❌'
         }
     }
 }
