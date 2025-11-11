@@ -5,7 +5,7 @@ pipeline {
         DOCKERHUB_CREDENTIALS = credentials('docker-hub-id')
         IMAGE_NAME = "y0srgh/myapp"
         IMAGE_TAG = "${env.BUILD_NUMBER}"
-        HELM_CHART_PATH = '.'
+        HELM_CHART_PATH = './myapp'
     }
     stages {
         stage('Checkout') {
@@ -44,7 +44,13 @@ pipeline {
             }
         }
 
-        stage('Déployer avec Helm') {
+        stage('Create Chart Helm') {
+            steps {
+                sh 'helm create $HELM_CHART_PATH'
+            }
+        }
+
+        stage('DDeploy with Helm') {
             steps { sh 'helm upgrade --install myapp $HELM_CHART_PATH' }
         }
 
