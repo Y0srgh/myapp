@@ -45,7 +45,7 @@ pipeline {
         }
 
         stage('Déployer avec Helm') {
-            steps { sh 'helm upgrade --install mon-app $HELM_CHART_PATH' }
+            steps { sh 'helm upgrade --install myapp $HELM_CHART_PATH' }
         }
 
         // stage('Deploy to Kubernetes') {
