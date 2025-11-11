@@ -5,6 +5,7 @@ pipeline {
         DOCKERHUB_CREDENTIALS = credentials('docker-hub-id')
         IMAGE_NAME = "y0srgh/myapp"
         IMAGE_TAG = "${env.BUILD_NUMBER}"
+        HELM_CHART_PATH = './mon-app'
     }
     stages {
         stage('Checkout') {
@@ -43,12 +44,16 @@ pipeline {
             }
         }
 
-        stage('Deploy to Kubernetes') {
-            steps {
-                sh 'kubectl apply -f deployment.yaml --validate=false'
-                sh 'kubectl apply -f service.yaml --validate=false'
-            }
+        stage('Déployer avec Helm') {
+            steps { sh 'helm upgrade --install mon-app $HELM_CHART_PATH' }
         }
+
+        // stage('Deploy to Kubernetes') {
+        //     steps {
+        //         sh 'kubectl apply -f deployment.yaml --validate=false'
+        //         sh 'kubectl apply -f service.yaml --validate=false'
+        //     }
+        // }
     }
 
     post {
