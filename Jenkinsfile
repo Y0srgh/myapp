@@ -5,7 +5,7 @@ pipeline {
         DOCKERHUB_CREDENTIALS = credentials('docker-hub-id')
         IMAGE_NAME = "y0srgh/myapp"
         IMAGE_TAG = "${env.BUILD_NUMBER}"
-        HELM_CHART_PATH = './mon-app'
+        HELM_CHART_PATH = './myapp'
     }
     stages {
         stage('Checkout') {
